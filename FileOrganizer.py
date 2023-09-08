@@ -21,16 +21,22 @@ def banner():
 def organizar_archivos(ruta):
     # Definir tipos de archivos y sus extensiones correspondientes
     tipos_archivos = {
-        'PDF': ['.pdf'],
-        'Documentos': ['.doc', '.docx', '.txt'],
-        'Hojas de cálculos': ['.xlsx'],
-        'Presentaciones': ['.pptx'],
-        'Imagenes': ['.jpg', '.jpeg', '.png', '.gif'],
-        'MP3': ['.mp3'],
-        'MP4': ['.mp4'],
+        'Documentos': ['.doc', '.docx', '.xlsx', '.pptx', '.txt', '.pdf'],
+        'Comprimidos': ['.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.cab', '.tar.gz'],
+        'Imágenes': ['.jpg', '.jpeg', '.png', '.gif'],
+        'Audios': ['.mp3', '.wav', '.aac', '.flac', '.wma', '.ogg', '.aiff', '.m4a', '.ape'],
+        'Videos': ['.mp4', '.avi', '.mkv', '.wmv', '.mov', '.flv', '.3gp', '.webm', '.mpg', '.rmvb'],
         'ISO': ['.iso'],
-        'Programas': ['.exe']
+        'Programas': ['.exe', '.deb', '.rpm', '.msi', '.apk', '.jar']
     }
+
+    # Obtener la lista de archivos en la carpeta principal excluyendo 'FileOrganizer.exe'
+    archivos_principales = [archivo for archivo in os.listdir(ruta) if archivo != 'FileOrganizer.exe']
+
+    # Verificar si la carpeta principal está vacía (sin contar 'FileOrganizer.exe')
+    if not archivos_principales:
+        print("No hay archivos para mover.")
+        return
 
     # Iterar a través de cada tipo de archivo y sus extensiones
     for tipo, extensiones in tipos_archivos.items():
@@ -38,9 +44,10 @@ def organizar_archivos(ruta):
         carpeta_tipo = os.path.join(ruta, tipo)
 
         # Iterar a través de los archivos en la carpeta principal
-        for archivo in os.listdir(ruta):
+        for archivo in archivos_principales:
+
             # Verificar si el archivo tiene una de las extensiones permitidas
-            if archivo != 'FileOrganizer.exe' and archivo.endswith(tuple(extensiones)):
+            if archivo.endswith(tuple(extensiones)):
                 # Crear la ruta completa al archivo
                 ruta_archivo = os.path.join(ruta, archivo)
 
@@ -51,13 +58,14 @@ def organizar_archivos(ruta):
                 print(f"Moviendo '{archivo}' a la carpeta '{tipo}'...")
                 shutil.move(ruta_archivo, os.path.join(carpeta_tipo, archivo))
 
+    print("Archivos organizados correctamente.")
+
 
 try:
     ruta_actual = os.getcwd()
     banner()
     input("Presiona Enter para continuar...")
     organizar_archivos(ruta_actual)
-    print("Archivos organizados correctamente.")
 except Exception as e:
     print("Ocurrió un error:", str(e))
 input("Presiona Enter para salir...")
